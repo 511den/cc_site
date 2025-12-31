@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crystal Coin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Навигация */
+        .navbar {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #00ffff;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+            letter-spacing: 2px;
+            cursor: pointer;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #00ffff;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .nav-btn:hover {
+            background: #00ffff;
+            color: #0c0c0c;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            transform: translateY(-2px);
+        }
+
+        /* Страницы */
+        .page {
+            display: none;
+            padding: 120px 2rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Главная страница */
+        .hero {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+        }
+
+        .crystal-text {
+            font-size: 5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #00ff00, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: gradientShift 4s ease infinite;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            margin-bottom: 2rem;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #ccc;
+            max-width: 600px;
+            line-height: 1.6;
+            margin-bottom: 3rem;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: #00ffff;
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2);
+        }
+
+        .feature-card h3 {
+            color: #00ffff;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* Страница правил */
+        .rules-container, .calculator-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 3rem;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.1);
+        }
+
+        .rules-header, .calculator-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .rules-header h1, .calculator-header h1 {
+            font-size: 3rem;
+            color: #00ffff;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            margin-bottom: 1rem;
+        }
+
+        .rules-content, .calculator-content {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .rules-section {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 4px solid #00ffff;
+        }
+
+        .rules-section h2 {
+            color: #00ffff;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .rules-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .rules-list li {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .rules-list li:before {
+            content: "•";
+            color: #00ffff;
+            font-weight: bold;
+            font-size: 1.5rem;
+            position: absolute;
+            left: 0;
+            top: -0.2rem;
+        }
+
+        /* Страница FAQ */
+        .faq-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 3rem;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.1);
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .faq-header h1 {
+            font-size: 3rem;
+            color: #00ffff;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            margin-bottom: 1rem;
+        }
+
+        .faq-content {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .faq-category {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 4px solid #00ffff;
+        }
+
+        .faq-category h2 {
+            color: #00ffff;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .faq-item {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1.5rem;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .faq-question {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: color 0.3s ease;
+        }
+
+        .faq-question:hover {
+            color: #00ffff;
+        }
+
+        .faq-question::after {
+            content: "+";
+            font-size: 1.5rem;
+            color: #00ffff;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-question.active::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            color: #cccccc;
+            line-height: 1.6;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-answer.show {
+            max-height: 500px;
+        }
+
+        /* Стили для калькулятора классов */
+        .calculator-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .control-group {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .control-group h2 {
+            color: #00ffff;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .class-select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .class-select:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .toggle-option {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .toggle-option:hover {
+            background: rgba(0, 255, 255, 0.1);
+        }
+
+        .toggle-option.active {
+            background: #00ffff;
+            color: #0c0c0c;
+            border-color: #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .class-info {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            min-height: 500px;
+        }
+
+        .class-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .class-name {
+            font-size: 2.5rem;
+            color: #00ffff;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .price-tag {
+            background: linear-gradient(45deg, #00ffff, #0099ff);
+            color: #0c0c0c;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .bonus-badges {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .badge {
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge.vip {
+            background: linear-gradient(45deg, #f39c12, #f1c40f);
+            color: #0c0c0c;
+        }
+
+        .badge.reborn {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
+        .class-description {
+            color: #cccccc;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border-left: 4px solid #00ffff;
+        }
+
+        .section-title {
+            color: #00ffff;
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pros-list, .cons-list, .bonus-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .pros-list li, .cons-list li, .bonus-list li {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .pros-list li {
+            background: rgba(46, 204, 113, 0.1);
+            border-left: 4px solid #2ecc71;
+        }
+
+        .cons-list li {
+            background: rgba(231, 76, 60, 0.1);
+            border-left: 4px solid #e74c3c;
+        }
+
+        .bonus-list li {
+            background: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid #3498db;
+        }
+
+        .list-icon {
+            font-size: 1.2rem;
+            min-width: 24px;
+        }
+
+        .pros-list .list-icon {
+            color: #2ecc71;
+        }
+
+        .cons-list .list-icon {
+            color: #e74c3c;
+        }
+
+        .bonus-list .list-icon {
+            color: #3498db;
+        }
+
+        .special-note {
+            background: rgba(155, 89, 182, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+            border-left: 4px solid #9b59b6;
+            font-weight: bold;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            color: #7f8c8d;
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #bdc3c7;
+        }
+
+        .empty-text {
+            font-size: 1.3rem;
+            max-width: 400px;
+        }
+
+        .highlight {
+            background: rgba(0, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        /* Футер */
+        .footer {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 3rem 2rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.3);
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: #00ffff;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .footer-section p, .footer-section a {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 0.8rem;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: block;
+        }
+
+        .footer-section a:hover {
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #666;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .crystal-text {
+                font-size: 3rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .nav-buttons {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .rules-container, .faq-container, .calculator-container {
+                padding: 1.5rem;
+            }
+            
+            .rules-header h1, .faq-header h1, .calculator-header h1 {
+                font-size: 2rem;
+            }
+            
+            .page {
+                padding: 140px 1rem 1rem;
+            }
+            
+            .calculator-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .class-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .class-name {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .crystal-text {
+                font-size: 2.5rem;
+            }
+            
+            .nav-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .bonus-badges {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="showPage('home')">CRYSTAL COIN</div>
+            <div class="nav-buttons">
+                <button class="nav-btn" onclick="showPage('home')">Главная</button>
+                <button class="nav-btn" onclick="showPage('rules')">Правила</button>
+                <button class="nav-btn" onclick="showPage('classes')">Классы</button>
+                <button class="nav-btn" onclick="showPage('faq')">FAQ</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Главная страница -->
+    <div id="home" class="page active">
+        <section class="hero">
+            <h1 class="crystal-text">CRYSTAL COIN</h1>
+            <p class="subtitle">Инновация в мире игр</p>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <h3>📕Имеется определённый свод правил</h3>
+                    <p>Данный свод правил поможет разобратся как играть в эту игру</p>
+                </div>
+                <div class="feature-card">
+                    <h3>⚡Разнообразие</h3>
+                    <p>В игре много событий которые будут создавать интересность в игре</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🌍 Доступность</h3>
+                    <p>Играем каждый день в школе 68</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Страница правил -->
+    <div id="rules" class="page">
+        <div class="rules-container">
+            <div class="rules-header">
+                <h1>Правила игры</h1>
+                <p>Ознакомьтесь с правилами игры Crystal Coin</p>
+            </div>
+            
+            <div class="rules-content">
+                <div class="rules-section">
+                    <h2>📋 Общие Правила</h2>
+                    <ul class="rules-list">
+                        <li>Термины: Дисквалификация - принудительное окончание игры для нарушителя.
+                            3 Предупреждения - Дисквалификация .
+                            Штраф - принудительные выплаты за нарушение и тд.</li>
+                        <li>Подделка купюр строго запрещена - дисквалификация</li>
+                        <li>Не разводить серьëзных конфиктов - дисквалификация</li>
+                        <li>Воровство без разрешения - штраф</li>
+                        <li>Все очевидные и неочивидные в том числе нарушения - Штраф, Предупреждение, Дисквалификация (Смотря какие нарушения)</li>
+                        <li>Не разбрасываться сс - предупреждение</li>
+                    </ul>
+                </div>
+
+                <div class="rules-section">
+                    <h2>📛Правила суда</h2>
+                    <ul class="rules-list">
+                        <li>Можно подать в суд почти на всё</li>
+                        <li>В суде все молча по очереди отвечают (начал мешать - штраф 500 сс) </li>
+                        <li>Бегство из суда - дисквалификация</li>
+                    </ul>
+                </div>
+
+                <div class="rules-section">
+                    <h2>💳 Механики</h2>
+                    <ul class="rules-list">
+                        <li>Минимальная сумма для вывода: 100 USD</li>
+                        <li>Комиссия за транзакции: 0.5% от суммы операции</li>
+                        <li>Срок обработки выводов: 3-5 рабочих дней</li>
+                        <li>Все операции фиксируются в блокчейне и не могут быть отменены</li>
+                    </ul>
+                </div>
+
+                <div class="rules-section">
+                    <h2>🔎Прочее</h2>
+                    <ul class="rules-list">
+                        <li>Сс не обошёлся без доната. всё что можно получить с донатом можно получить без него. вип можно будет купить за сс на время. за донат можно получать разные функции. основной курс сс - 1сс - 8 копеек (1 рубль - 12.5 сс) донат можно осуществить не только с помощью рублей а и другими пожертвованиями. ваша ответсвеннасть при покупке доната (см. Ответсвенность)</li>
+                        <li>Попытки взлома или нарушения работы системы</li>
+                        <li>Создание фиктивных аккаунтов</li>
+                        <li>Мошеннические операции и обман других пользователей</li>
+                        <li>Нарушение международных санкций и эмбарго</li>
+                    </ul>
+                </div>
+
+                <div class="rules-section">
+                    <h2>⚖️ Ответственность</h2>
+                    <ul class="rules-list">
+                        <li>Вы должны понимать, что мы не несем ответственность за ваше поведение и любые ваши решения. Администрация сс несет ответственность только за игровой процесс и прочие моменты касательно самого проекта. Однако за нарушения того, что не входит в нашу ответственность все равно можно получить наказание. к примеру:</li>
+                        <li>Детский сад (конфликт из-за игровой валюты и т д) который кто либо вероятно устроит, а если такое и происходит то в этом нету нашей вины. Как правило такое поведение обычно присекается - в основном за нарушение этого человек получает предупреждение на время</li>
+                        <li>Покупая что либо (как за игровую так и за реальную валюту) только вы несете за это ответственность, вы должны понимать что это СОВЕРШЕННО не наши проблемы</li>
+                        <li>При конфликте или всевозможных нарушений касательно правил вы должны обратится к администрации, НО если вы стали жертвой того, что не может быть решено нами, то это ваши проблемы</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница Классы -->
+    <div id="classes" class="page">
+        <div class="calculator-container">
+            <div class="calculator-header">
+                <h1>Калькулятор Классов</h1>
+                <p>Выберите класс и настройте улучшения для просмотра полной информации</p>
+            </div>
+            
+            <div class="calculator-content">
+                <div class="calculator-controls">
+                    <div class="control-group">
+                        <h2><i class="fas fa-users"></i> Выбор класса</h2>
+                        <select id="classSelect" class="class-select">
+                            <option value="">-- Выберите класс --</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <h2><i class="fas fa-crown"></i> VIP статус</h2>
+                        <div class="toggle-group">
+                            <div class="toggle-option" data-option="vip-no">Нет</div>
+                            <div class="toggle-option active" data-option="vip-yes">Да</div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <h2><i class="fas fa-fire"></i> Перерожденный</h2>
+                        <div class="toggle-group">
+                            <div class="toggle-option active" data-option="reborn-no">Нет</div>
+                            <div class="toggle-option" data-option="reborn-yes">Да</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="class-info">
+                    <div id="classInfo">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-hat-wizard"></i>
+                            </div>
+                            <div class="empty-text">
+                                <h3>Выберите класс для отображения информации</h3>
+                                <p>Используйте панель выше для выбора класса и его улучшений</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница FAQ -->
+    <div id="faq" class="page">
+        <div class="faq-container">
+            <div class="faq-header">
+                <h1>Часто задаваемые вопросы</h1>
+                <p>Найдите ответы на самые популярные вопросы о Crystal Coin</p>
+            </div>
+            
+            <div class="faq-content">
+                <div class="faq-category">
+                    <h2>🎮 Об игре</h2>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Что такое Crystal Coin?
+                        </div>
+                        <div class="faq-answer">
+                            <p>Crystal Coin - Это игра, которая сочетает в себе элементы экономической стратегии и социального взаимодействия. Игроки могут зарабатывать виртуальную валюту, торговать, создавать бизнесы и взаимодействовать друг с другом в рамках игровой экономики.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Как начать играть?
+                        </div>
+                        <div class="faq-answer">
+                            <p>Для начала игры если вы не из 6в вам нужно будет написать в тг den511den для присоединения в игру.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Как вести себя при игре?
+                        </div>
+                        <div class="faq-answer">
+                            <p>Самым обычным образом, но с долей понимания и совести. Основное поведение: вести себя адекватно не разбрасывать сс где попало, не делать на уроке не безопасные для игры вещи, В целом очевидные нарушения равняются варну</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-category">
+                    <h2>💳 Банковская система</h2>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            В чем разница между дебетовой и кредитной картой?
+                        </div>
+                        <div class="faq-answer">
+                            <p>Дебетовая карта позволяет тратить только собственные средства, внесенные на счет. Кредитная карта предоставляет доступ к заемным средствам банка с последующим возвратом с процентами.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Как получить банковскую карту?
+                        </div>
+                        <div class="faq-answer">
+                            <p>Для получения карты обратитесь к главному администратору банка. Дебетовая карта стоит 2000 сс, кредитная - в 20 раз дороже дебетовой и предоставляется в аренду на определенный срок.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Какие проценты по кредитной карте?
+                        </div>
+                        <div class="faq-answer">
+                            <p>Процентная ставка по кредитной карте составляет 25% от суммы займа. Это означает, что если вы потратили 1000 сс, вам нужно вернуть 1250 сс до конца срока аренды карты.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-category">
+                    <h2>⚖️ Правовая система</h2>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Как подать иск в суд?
+                        </div>
+                        <div class="faq-answer">
+                            <p>Для подачи иска необходимо обратиться к судье игры с обоснованием ваших претензий. Суд рассмотрит дело, выслушает обе стороны и вынесет вердикт.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Что грозит за нарушение правил?
+                        </div>
+                        <div class="faq-answer">
+                            <p>В зависимости от тяжести нарушения, игрок может получить предупреждение, штраф или дисквалификацию. Три предупреждения автоматически приводят к дисквалификации.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Можно ли обжаловать решение суда?
+                        </div>
+                        <div class="faq-answer">
+                            <p>В некоторых случаях решение суда можно обжаловать, обратившись к вышестоящей инстанции - главному администратору игры. Однако это возможно только при наличии веских оснований.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-category">
+                    <h2>🔧 Технические вопросы</h2>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Как осуществляется NFC-оплата?
+                        </div>
+                        <div class="faq-answer">
+                            <p>Все операции по банковским картам проводятся через телефон главного администратора, который оснащен NFC-считывателем. Карты содержат специальные чипы, которые взаимодействуют только с этим устройством.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Что делать, если карта не работает?
+                        </div>
+                        <div class="faq-answer">
+                            <p>В случае технических проблем с картой обратитесь к главному администратору банка. Он проверит состояние карты и при необходимости заменит ее.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Как защищены мои средства?
+                        </div>
+                        <div class="faq-answer">
+                            <p>Все транзакции фиксируются и контролируются администрацией игры. Подделка купюр строго запрещена и карается дисквалификацией. Рекомендуется также использовать безопасные методы хранения своих средств.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Создатели</h3>
+                <a href="https://t.me/d511developers">511den - создатель</a>
+                <p>Artx3000 - создатель</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Адрес</h3>
+                <p>Хабаровск школа 68</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Документы</h3>
+                <a href="https://raw.githubusercontent.com/511den/cc_site/refs/heads/main/LICENSE">Лицензионное соглашение GPL 3.0</a>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Социальные сети</h3>
+                <a href="https://t.me/crystal_coin5168">Telegram</a>
+
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2026 Crystal Coin. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <!-- Font Awesome для иконок -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <script>
+        // Данные классов (встроенные в код)
+        const classesData = {
+            "commander": {
+                "id": "commander",
+                "name": "Командир",
+                "price_ss": "4.000 сс",
+                "price_rub": "50 руб/неделя",
+                "description": "Лидер команды с полномочиями управления и контроля над сокомандниками",
+                "pros": [
+                    "Может собирать налоги с сокомандников (раз в 2 дня, макс 15% от сс)",
+                    "Может давать принудительные указания тиммейтам",
+                    "Может повышать по рангу игроков в команде",
+                    "Если один из участников обманывает, то он ОБЯЗАН отдать всё на что он обманул",
+                    "Может выгонять игроков не отдавая денег",
+                    "Добавляет возможность принять ещё одного человека в команду (4 → 5)",
+                    "За каждого принятого игрока получает 200 сс"
+                ],
+                "cons": [
+                    "Его можно свергнуть (механика предателя)",
+                    "Платит налог банку за свой налог внутри команды 20%"
+                ],
+                "vip_bonus": "Увеличивает налог с команды до 30% (вместо 15%), +15% к налогу, может повышать двух игроков одновременно",
+                "reborn_bonus": "Невозможно свергнуть (иммунитет к Крысе), может собирать налоги раз в день"
+            },
+            "robber": {
+                "id": "robber",
+                "name": "Грабитель со связями",
+                "price_ss": "3.500 сс",
+                "price_rub": "40 руб/неделя",
+                "description": "Специалист по грабежам с судебной защитой и связями",
+                "pros": [
+                    "Повышает шанс выиграть суд на 20% при грабеже (×1.2)",
+                    "Может воровать сс 1 раз в день без наказаний"
+                ],
+                "cons": [
+                    "При проигрыше в суде наказание в 2 раза хуже"
+                ],
+                "vip_bonus": "Может воровать 3 раза в день, шанс выиграть суд ×1.5, наказание за проигрыш не удваивается",
+                "reborn_bonus": "Шанс выиграть суд ×1.4, штраф за проигрыш не удваивается"
+            },
+            "untouchable": {
+                "id": "untouchable",
+                "name": "Неприкасаемый",
+                "price_ss": "5.000 сс",
+                "price_rub": "50 руб/неделя",
+                "description": "Защищенный класс с возможностью возврата украденных средств через суд",
+                "pros": [
+                    "Может отсудить 20% от украденных у него сс (во время судного дня)"
+                ],
+                "cons": [
+                    "Не может воровать более 5к сс во все моменты когда можно"
+                ],
+                "vip_bonus": "Может отсудить 50% вместо 20%, возвращает деньги сразу после кражи",
+                "reborn_bonus": "Полный возврат украденных средств (100%) и может воровать до 10к сс"
+            },
+            "auctioneer": {
+                "id": "auctioneer",
+                "name": "Аукционер",
+                "price_ss": "2.000 сс",
+                "price_rub": "25 руб/неделя",
+                "description": "Организатор аукционов коллекционных предметов с получением комиссии",
+                "pros": [
+                    "Может договариваться о проведении аукциона через администрацию",
+                    "Может выставлять коллекционки на аукцион, часть денег с ее покупки перейдет игроку"
+                ],
+                "cons": ["Нет минусов"],
+                "vip_bonus": "Получает 25% комиссии с продажи, может проводить аукционы каждый день",
+                "reborn_bonus": "Может проводить аукционы без ограничений и получает 20% комиссии"
+            },
+            "investor": {
+                "id": "investor",
+                "name": "Инвестор",
+                "price_ss": "9.000 сс",
+                "price_rub": "130 руб/неделя",
+                "description": "Финансовый магнат с пассивным доходом и усиленными инвестициями",
+                "pros": [
+                    "Может вложить сс и через 3 дня может их забрать с процентом 1.5",
+                    "Купленные им коллекционки сильнее подорожают к концу сезона",
+                    "У него есть доступ к покупке инвестиционной карты"
+                ],
+                "cons": [
+                    "Лимит вложения: 10.000 сс"
+                ],
+                "vip_bonus": "Процент вклада увеличивается до 3.0, лимит вложения: 20.000 сс, коллекционки подорожают в 3 раза сильнее",
+                "reborn_bonus": "Лимит вложения: 25.000 сс, процент: 2.5, коллекционки подорожают в 2 раза сильнее"
+            },
+            "hardworker": {
+                "id": "hardworker",
+                "name": "Многорабочий",
+                "price_ss": "2.000 сс",
+                "price_rub": "20 руб/неделя",
+                "description": "Трудоголик с бонусом к квестам и возможностью взять дополнительный класс",
+                "pros": [
+                    "За квесты он получает в 1.1 больше сс (за квест дают 2.000 он получает 2.200)",
+                    "Пока активен этот класс он может взять ещё один класс"
+                ],
+                "cons": [
+                    "С випом получает не ×1.65 а х1.3"
+                ],
+                "vip_bonus": "Бонус за квесты: ×1.5 (вместо ×1.1), может взять два дополнительных класса, VIP множитель ×1.8",
+                "reborn_bonus": "Может взять ДВА дополнительных класса, бонус за квесты: ×1.5"
+            },
+            "free": {
+                "id": "free",
+                "name": "Свободный",
+                "price_ss": "3.000 сс",
+                "price_rub": "30 руб/неделя",
+                "description": "Независимый игрок с защитой от налогов и судебных издержек",
+                "pros": [
+                    "Не должен платить налоги будучи в команде с командиром",
+                    "Кроме него можно брать ещё 1 класс",
+                    "При проигрыше в суде платит меньше (0.5)"
+                ],
+                "cons": [
+                    "Он получил дозу радиации в чернобыле поэтому он не может воровать"
+                ],
+                "vip_bonus": "При проигрыше в суде платит ×0.1 (вместо 0.5), полный иммунитет к приказам Командира, может брать 2 дополнительных класса",
+                "reborn_bonus": "Может игнорировать любые приказы Командира, полный иммунитет к налогам"
+            },
+            "gambler": {
+                "id": "gambler",
+                "name": "Азартный игрок (Везучий)",
+                "price_ss": "5.500 сс",
+                "price_rub": "50 руб/неделя",
+                "description": "Везение в азартных играх с увеличенными шансами и бонусами",
+                "pros": [
+                    "На 1.2% больше шанс выиграть в казино/лотерее/розыгрыше",
+                    "Удвоенные подарки по типу: бесплатной лотереи, бесплатного участия в казико, колесе фортуны"
+                ],
+                "cons": [
+                    "Класс работает только если человек будет часто депать",
+                    "VIP приносит не 1.8% а 1.5%",
+                    "К любому розыгрышу добавляется шанс 1% что игрок потеряет 50% от всех своих сс"
+                ],
+                "vip_bonus": "Шанс выигрыша +5%, VIP приносит 3.0%, исключает риск потери 50% сс, утраивает все выигрыши",
+                "reborn_bonus": "Исключает риск потери 50% сс, удваивает все выигрыши, шанс выигрыша +3%"
+            },
+            "debtor": {
+                "id": "debtor",
+                "name": "Должник",
+                "price_ss": "1.500 сс",
+                "price_rub": "20 руб/неделя",
+                "description": "Игрок с долгами, защитой от преступлений и льготными кредитами",
+                "pros": [
+                    "На его сторону не могут быть никакие преступления",
+                    "Он платит меньше на 0.8 процентов по кредиту"
+                ],
+                "cons": [
+                    "Платит беспроцентный кредит но есть много всяких минусов",
+                    "Если сворует у кого то сс то должен будет выплатить 50% если жертва подаст в суд",
+                    "Он не может участвовать в ивентах"
+                ],
+                "vip_bonus": "Защита от любых преступлений 100% времени, скидка по кредиту 3.0%, может участвовать в ивентах, может воровать без штрафов",
+                "reborn_bonus": "Может брать кредиты без ограничений, может участвовать в ивентах"
+            },
+            "bankrupt": {
+                "id": "bankrupt",
+                "name": "Банкрот",
+                "price_ss": "Все деньги (>500 сс)",
+                "price_rub": "Недельный класс",
+                "description": "Крайняя мера для восстановления после потери всех средств",
+                "pros": [
+                    "Приносит по 1к сс в день в течение недели (5 дней)"
+                ],
+                "cons": [
+                    "Можно взять только один раз за всю игру",
+                    "Доступен со второй недели игры",
+                    "Не может брать никакие классы пока не пройдёт срок в 5 дней",
+                    "Глушит VIP, все бусты и классы в сроке 5 дней"
+                ],
+                "vip_bonus": "Недоступно (класс отключает VIP)",
+                "reborn_bonus": "Недоступно"
+            },
+            "sociophobe": {
+                "id": "sociophobe",
+                "name": "Социофоб",
+                "price_ss": "3.000 сс",
+                "price_rub": "30 руб/неделя",
+                "description": "Одиночка с усиленной защитой и возможностью создать свою команду",
+                "pros": [
+                    "Возвращает 50% сворованных у него денег через суд (даже при разрешении админа)",
+                    "Он может создать свою команду без нёрфа но может принять ТОЛЬКО других социофобов",
+                    "Можно взять ещё один класс"
+                ],
+                "cons": [
+                    "Не может воровать",
+                    "Не может взаимодействовать с игроками по мимо других социофобов",
+                    "Не может вступать в команды"
+                ],
+                "vip_bonus": "Возвращает 100% сворованного, может принимать в команду до 3 не-социофобов, может взаимодействовать со всеми",
+                "reborn_bonus": "Может создавать команды для всех, но остальные правила сохраняются, возврат 100%"
+            },
+            "provocateur": {
+                "id": "provocateur",
+                "name": "Провокатор",
+                "price_ss": "1.500 сс",
+                "price_rub": "30 руб/неделя",
+                "description": "Подстрекатель, вызывающий рейды на других игроков",
+                "pros": [
+                    "Может вызвать рейд на любую перемену раз в день бесплатно (только на одного игрока)"
+                ],
+                "cons": [
+                    "Не может воровать",
+                    "Чел на которого кинули рейд может отсудить 20% от всех украденных денег у самого провокатора"
+                ],
+                "vip_bonus": "Может вызывать 3 рейда в день, может воровать во время рейдов, жертва не может отсудить деньги",
+                "reborn_bonus": "Жертва не может отсудить деньги с Провокатора, может воровать во время рейдов"
+            },
+            "bum": {
+                "id": "bum",
+                "name": "Бомж (Переработанный)",
+                "price_ss": "500 сс",
+                "price_rub": "5 руб/неделя",
+                "description": "Игрок, работающий с отрицательным балансом для быстрого восстановления",
+                "pros": [
+                    "Может уходить в минус по балансу до -15.000 сс",
+                    "Пока его баланс отрицательный, получает в 1.5 раза больше сс за квесты",
+                    "Не платит проценты по кредиту, пока его баланс отрицательный",
+                    "Игнорирует налоги Командира"
+                ],
+                "cons": [
+                    "Не может вступать в команды",
+                    "Не может покупать другие классы, пока его баланс отрицательный",
+                    "Если баланс отрицательный после недели - обнуляется до 0 и нельзя брать классы 3 дня",
+                    "Украденные у него деньги уменьшают его долг, а не идут ворующему"
+                ],
+                "vip_bonus": "Лимит минуса: -50.000 сс, бонус за квесты: ×2.0, может вступать в команды, украденные деньги не уменьшают долг",
+                "reborn_bonus": "Может вступать в команды даже с отрицательным балансом, лимит минуса: -30.000 сс"
+            },
+            "collector": {
+                "id": "collector",
+                "name": "Коллектор",
+                "price_ss": "1.000 сс",
+                "price_rub": "10 руб/неделя",
+                "description": "Сборщик долгов с процентным вознаграждением",
+                "pros": [
+                    "Может выбивать долги у Должников и оставлять себе 20% от выбитых долгов",
+                    "Остальное тому, у кого Должник брал в долг"
+                ],
+                "cons": ["Нет описания минусов в предоставленных данных"],
+                "vip_bonus": "Оставляет себе 50% от выбитых долгов, может принудительно взыскивать долги без суда, +20% к эффективности выбивания",
+                "reborn_bonus": "Может принудительно взыскивать долги без суда, оставляет 40%"
+            },
+            "inagent": {
+                "id": "inagent",
+                "name": "Инагент",
+                "price_ss": "3.000 сс",
+                "price_rub": "30 руб/неделя",
+                "description": "Специальный агент для увеличения общего призового фонда",
+                "pros": [
+                    "В конце получает +100 руб к выигрышу"
+                ],
+                "cons": [
+                    "Не может вступать в команды",
+                    "Нельзя брать больше 1 раза",
+                    "Не может воровать",
+                    "Не может брать челленджи (работу)"
+                ],
+                "special": "Если ты взял его один раз за игру, то этого будет достаточно чтобы повысить фонд приза",
+                "vip_bonus": "+300 руб к выигрышу, может быть взят дважды за игру, может брать челленджи",
+                "reborn_bonus": "Может быть взят дважды за игру, +200 руб к выигрышу"
+            },
+            "rat": {
+                "id": "rat",
+                "name": "Крыса/Предатель",
+                "price_ss": "4.000 сс",
+                "price_rub": "50 руб/неделя",
+                "description": "Мастер интриг, предательства и захвата власти в командах",
+                "pros": [
+                    "Может выйти из команды не отдавая денег лидеру",
+                    "Может свергнуть лидера, встать на его место и забрать у него класс Командира (при согласии команды)"
+                ],
+                "cons": ["Нет минусов"],
+                "vip_bonus": "Может свергать без общего согласия команды, автоматически становится Командиром при свержении, иммунитет к изгнанию",
+                "reborn_bonus": "Автоматически становится Командиром при свержении, иммунитет к изгнанию"
+            },
+            "reborn": {
+                "id": "reborn",
+                "name": "Перерожденный",
+                "price_ss": "Весь баланс (мин 40к сс)",
+                "price_rub": "На 2 недели",
+                "description": "Эндгейм-класс с колоссальным усилением всех аспектов игры",
+                "pros": [
+                    "Все подарки, сс и т.д. умножаются в 4 раза",
+                    "На 20% больше шанс к удаче в казино и других розыгрышах",
+                    "Можно взять ещё один класс",
+                    "Лимит дебетовой карты увеличивается до 40.000"
+                ],
+                "cons": [
+                    "Можно взять только в течение последних двух недель",
+                    "Все привилегии отпадают при покупке другого класса"
+                ],
+                "special": "Им может быть не более двух игроков за всё время",
+                "vip_bonus": "Умножение ×8 вместо ×4, шанс удачи +50%, лимит дебетовой карты: 80.000",
+                "reborn_bonus": "Недоступно (уже Перерожденный)"
+            },
+            "analyst": {
+                "id": "analyst",
+                "name": "Аналитик",
+                "price_ss": "4.000 сс",
+                "price_rub": "45 руб/неделя",
+                "description": "Мастер информации, анализа рынка и предсказания цен",
+                "pros": [
+                    "Может один раз в день бесплатно узнать точный баланс сс любого игрока",
+                    "При покупке коллекционки имеет шанс 25% узнать, насколько она подорожает к концу сезона"
+                ],
+                "cons": [
+                    "Не может грабить игроков, чей баланс ниже 5.000 сс",
+                    "Цена на любую коллекционку снижена на 15% (только при продаже)"
+                ],
+                "vip_bonus": "Может узнавать баланс 5 раз в день, шанс предсказания: 100%, может грабить любых игроков, скидка на продажу отменена",
+                "reborn_bonus": "100% шанс узнать будущую цену коллекционки, может грабить любых игроков"
+            },
+            "diplomat": {
+                "id": "diplomat",
+                "name": "Дипломат",
+                "price_ss": "2.500 сс",
+                "price_rub": "30 руб/неделя",
+                "description": "Миротворец, организующий альянсы между командами",
+                "pros": [
+                    "Может заключать «Пакты» между командами на день (без грабежа друг друга)",
+                    "Получает 100 сс за каждого нового игрока, вступившего в любую команду"
+                ],
+                "cons": [
+                    "Его способности не работают против игроков с классом «Мошенник»",
+                    "Каждый пакт стоит 1к сс"
+                ],
+                "vip_bonus": "Пакты стоят 0 сс, получает 300 сс за нового игрока, способности работают против Мошенника, может заключать бессрочные пакты",
+                "reborn_bonus": "Может заключать бессрочные пакты, способности работают против Мошенника"
+            },
+            "bodyguard": {
+                "id": "bodyguard",
+                "name": "Телохранитель",
+                "price_ss": "По просьбе админа",
+                "price_rub": "Не указано",
+                "description": "Админский охранник с привилегиями и обязанностями",
+                "pros": [
+                    "Помимо этого класса игрок может взять любой другой",
+                    "Получает 1к-2к сс в неделю",
+                    "Получает премию раз в неделю"
+                ],
+                "cons": ["Нет минусов"],
+                "duty": "ОБЯЗАННОСТЬ: охранять админов",
+                "vip_bonus": "Получает 5к-10к сс в неделю, может брать три дополнительных класса, получает двойную премию",
+                "reborn_bonus": "Может брать три дополнительных класса, получает 3к-5к сс в неделю"
+            },
+            "scammer": {
+                "id": "scammer",
+                "name": "Мошенник",
+                "price_ss": "5.000 сс",
+                "price_rub": "Не указано",
+                "description": "Мастер обмана, воровства и манипуляций с экономикой",
+                "pros": [
+                    "Может обманывать игроков на сс",
+                    "Может воровать сс 1 раз в день и не быть засужен",
+                    "Может забрать сс в размере 20% из крипто кошельков у людей",
+                    "Может забирать сс с счёта Инвестора"
+                ],
+                "cons": [
+                    "При слишком частом использовании его особенностей можно потерять весь свой баланс сс"
+                ],
+                "special": "Им может быть только 1 человек",
+                "vip_bonus": "Может воровать 4 раза в день, может забирать 50% из крипто-кошельков, иммунитет к потере баланса, может обманывать без ограничений",
+                "reborn_bonus": "Иммунитет к потере баланса за частые обманы, может воровать 3 раза в день"
+            },
+            "businessman": {
+                "id": "businessman",
+                "name": "Бизнесмен",
+                "price_ss": "1.000 сс",
+                "price_rub": "20 руб/неделя",
+                "description": "Предприниматель, работающий с внеигровой экономикой и валютой BC",
+                "pros": [
+                    "Может продавать разные товары в Roblox и других играх за валюту BC (Business Coin)"
+                ],
+                "cons": ["Нет описания минусов в предоставленных данных"],
+                "note": "ПРИМЕЧАНИЕ: БЕТА ТЕСТ!",
+                "vip_bonus": "Получает эксклюзивные товары для продажи, +200% прибыли с продаж, может устанавливать любые курсы обмена, монополия на редкие товары",
+                "reborn_bonus": "Может устанавливать свои курсы обмена BC/сс, создавать собственные товары"
+            }
+        };
+
+        // Глобальные переменные для калькулятора
+        let selectedClass = '';
+        let hasVIP = false;
+        let isReborn = false;
+
+        // Функции для навигации по сайту
+        function showPage(pageId) {
+            // Скрыть все страницы
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Показать выбранную страницу
+            document.getElementById(pageId).classList.add('active');
+            
+            // Прокрутить к верху
+            window.scrollTo(0, 0);
+            
+            // Инициализировать калькулятор если показываем страницу классов
+            if (pageId === 'classes' && !selectedClass) {
+                initCalculator();
+            }
+        }
+
+        function toggleFAQ(element) {
+            // Переключаем класс active для вопроса
+            element.classList.toggle('active');
+            
+            // Находим соответствующий ответ
+            const answer = element.nextElementSibling;
+            
+            // Переключаем класс show для ответа
+            answer.classList.toggle('show');
+        }
+
+        // Функции для калькулятора классов
+        function initCalculator() {
+            try {
+                // Заполняем выпадающий список
+                const classSelect = document.getElementById('classSelect');
+                classSelect.innerHTML = '<option value="">-- Выберите класс --</option>';
+                
+                // Добавляем все классы в выпадающий список
+                Object.values(classesData).forEach(cls => {
+                    const option = document.createElement('option');
+                    option.value = cls.id;
+                    option.textContent = cls.name;
+                    classSelect.appendChild(option);
+                });
+                
+                // Назначаем обработчики событий
+                setupCalculatorEvents();
+                
+                // Показываем первый класс по умолчанию
+                selectedClass = 'commander';
+                classSelect.value = 'commander';
+                updateClassInfo();
+                
+            } catch (error) {
+                console.error('Ошибка загрузки данных классов:', error);
+                document.getElementById('classInfo').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="empty-text">
+                            <h3>Ошибка загрузки данных</h3>
+                            <p>${error.message}</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function setupCalculatorEvents() {
+            // Настройка выбора класса
+            const classSelect = document.getElementById('classSelect');
+            classSelect.addEventListener('change', function() {
+                selectedClass = this.value;
+                updateClassInfo();
+            });
+            
+            // Настройка переключателей VIP
+            const vipOptions = document.querySelectorAll('[data-option^="vip-"]');
+            vipOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    vipOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    hasVIP = this.dataset.option === 'vip-yes';
+                    updateClassInfo();
+                });
+            });
+            
+            // Настройка переключателей Перерожденный
+            const rebornOptions = document.querySelectorAll('[data-option^="reborn-"]');
+            rebornOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    rebornOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    isReborn = this.dataset.option === 'reborn-yes';
+                    updateClassInfo();
+                });
+            }); 
+        }
+
+        function updateClassInfo() {
+            const classInfoDiv = document.getElementById('classInfo');
+            
+            if (!selectedClass || !classesData[selectedClass]) {
+                classInfoDiv.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-hat-wizard"></i>
+                        </div>
+                        <div class="empty-text">
+                            <h3>Выберите класс для отображения информации</h3>
+                            <p>Используйте панель выше для выбора класса и его улучшений</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const classData = classesData[selectedClass];
+            
+            // Определяем бейджи
+            let badgesHTML = '';
+            if (hasVIP && classData.vip_bonus && classData.vip_bonus !== "Недоступно") {
+                badgesHTML += `<div class="badge vip"><i class="fas fa-crown"></i> VIP Активен</div>`;
+            }
+            if (isReborn && classData.reborn_bonus && classData.reborn_bonus !== "Недоступно") {
+                badgesHTML += `<div class="badge reborn"><i class="fas fa-fire"></i> Перерожденный</div>`;
+            }
+            
+            // Определяем бонусы
+            let bonusHTML = '';
+            if (hasVIP && classData.vip_bonus && classData.vip_bonus !== "Недоступно") {
+                bonusHTML += `<li><span class="list-icon"><i class="fas fa-star"></i></span><span><span class="highlight">VIP бонус:</span> ${classData.vip_bonus}</span></li>`;
+            }
+            if (isReborn && classData.reborn_bonus && classData.reborn_bonus !== "Недоступно") {
+                bonusHTML += `<li><span class="list-icon"><i class="fas fa-bolt"></i></span><span><span class="highlight">Перерожденный бонус:</span> ${classData.reborn_bonus}</span></li>`;
+            }
+            
+            // Специальные примечания
+            let specialHTML = '';
+            if (classData.special) {
+                specialHTML += `<div class="special-note"><i class="fas fa-exclamation-circle"></i> ${classData.special}</div>`;
+            }
+            
+            // Формируем HTML
+            classInfoDiv.innerHTML = `
+                <div class="class-header">
+                    <div class="class-name">${classData.name}</div>
+                    <div class="price-tag">${classData.price_ss} / ${classData.price_rub}</div>
+                </div>
+                
+                ${badgesHTML ? `<div class="bonus-badges">${badgesHTML}</div>` : ''}
+                
+                <div class="class-description">${classData.description}</div>
+                
+                <div class="section-title"><i class="fas fa-plus-circle"></i> Преимущества</div>
+                <ul class="pros-list">
+                    ${classData.pros.map(pro => `<li><span class="list-icon"><i class="fas fa-check"></i></span><span>${pro}</span></li>`).join('')}
+                </ul>
+                
+                <div class="section-title"><i class="fas fa-minus-circle"></i> Недостатки</div>
+                <ul class="cons-list">
+                    ${classData.cons.map(con => `<li><span class="list-icon"><i class="fas fa-times"></i></span><span>${con}</span></li>`).join('')}
+                </ul>
+                
+                ${bonusHTML ? `
+                <div class="section-title"><i class="fas fa-gift"></i> Активные бонусы</div>
+                <ul class="bonus-list">
+                    ${bonusHTML}
+                </ul>
+                ` : ''}
+                
+                ${specialHTML}
+            `;
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('home');
+        });
+    </script>
+</body>
+</html>
