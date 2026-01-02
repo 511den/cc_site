@@ -1503,83 +1503,95 @@ function setupCalculatorEvents() {
             });
         }
 
-        function updateClassInfo() {
-            const classInfoDiv = document.getElementById('classInfo');
-            if (!classInfoDiv) return;
-            
-            if (!selectedClass || !classesData[selectedClass]) {
-                classInfoDiv.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">
-                            <i class="fas fa-hat-wizard"></i>
-                        </div>
-                        <div class="empty-text">
-                            <h3>Выберите класс для отображения информации</h3>
-                            <p>Используйте панель выше для выбора класса и его улучшений</p>
-                        </div>
-                    </div>
-                `;
-                return;
-            }
-            
-            const classData = classesData[selectedClass];
-            
-            // Определяем бейджи
-            let badgesHTML = '';
-            if (hasVIP && classData.vip_bonus && classData.vip_bonus !== "Нет" && classData.vip_bonus !== "Недоступно") {
-                badgesHTML += `<div class="badge vip"><i class="fas fa-crown"></i> VIP Активен</div>`;
-            }
-            if (isReborn && classData.reborn_bonus && classData.reborn_bonus !== "Нет" && classData.reborn_bonus !== "Недоступно") {
-                badgesHTML += `<div class="badge reborn"><i class="fas fa-fire"></i> Перерожденный</div>`;
-            }
-            
-            // Определяем бонусы
-            let bonusHTML = '';
-            if (hasVIP && classData.vip_bonus && classData.vip_bonus !== "Нет" && classData.vip_bonus !== "Недоступно") {
-                bonusHTML += `<li><span class="list-icon"><i class="fas fa-star"></i></span><span><span class="highlight">VIP бонус:</span> ${classData.vip_bonus}</span></li>`;
-            }
-            if (isReborn && classData.reborn_bonus && classData.reborn_bonus !== "Нет" && classData.reborn_bonus !== "Недоступно") {
-                bonusHTML += `<li><span class="list-icon"><i class="fas fa-bolt"></i></span><span><span class="highlight">Перерожденный бонус:</span> ${classData.reborn_bonus}</span></li>`;
-            }
-            
-            // Специальные примечания
-            let specialHTML = '';
-            if (classData.special) {
-                specialHTML += `<div class="special-note"><i class="fas fa-exclamation-circle"></i> ${classData.special}</div>`;
-            }
-            
-            // Формируем HTML
-            classInfoDiv.innerHTML = `
-                <div class="class-header">
-                    <div class="class-name">${classData.name}</div>
-                    <div class="price-tag">${classData.price_ss} / ${classData.price_rub}</div>
+function updateClassInfo() {
+    const classInfoDiv = document.getElementById('classInfo');
+    if (!classInfoDiv) return;
+    
+    if (!selectedClass || !classesData[selectedClass]) {
+        classInfoDiv.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-hat-wizard"></i>
                 </div>
-                
-                ${badgesHTML ? `<div class="bonus-badges">${badgesHTML}</div>` : ''}
-                
-                <div class="class-description">${classData.description}</div>
-                
-                <div class="section-title"><i class="fas fa-plus-circle"></i> Преимущества</div>
-                <ul class="pros-list">
-                    ${classData.pros.map(pro => pro ? `<li><span class="list-icon"><i class="fas fa-check"></i></span><span>${pro}</span></li>` : '').join('')}
-                </ul>
-                
-                <div class="section-title"><i class="fas fa-minus-circle"></i> Недостатки</div>
-                <ul class="cons-list">
-                    ${classData.cons.map(con => con ? `<li><span class="list-icon"><i class="fas fa-times"></i></span><span>${con}</span></li>` : '').join('')}
-                </ul>
-                
-                ${bonusHTML ? `
-                <div class="section-title"><i class="fas fa-gift"></i> Активные бонусы</div>
-                <ul class="bonus-list">
-                    ${bonusHTML}
-                </ul>
-                ` : ''}
-                
-                ${specialHTML}
-            `;
+                <div class="empty-text">
+                    <h3>Выберите класс для отображения информации</h3>
+                    <p>Используйте панель выше для выбора класса и его улучшений</p>
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    const classData = classesData[selectedClass];
+    
+    // Определяем бейджи - показываем VIP бейдж всегда если выбрана VIP опция
+    let badgesHTML = '';
+    if (hasVIP) {
+        badgesHTML += `<div class="badge vip"><i class="fas fa-crown"></i> VIP Активен</div>`;
+    }
+    if (isReborn) {
+        badgesHTML += `<div class="badge reborn"><i class="fas fa-fire"></i> Перерожденный</div>`;
+    }
+    
+    // Определяем бонусы
+    let bonusHTML = '';
+    if (hasVIP) {
+        const vipBonus = classData.vip_bonus;
+        if (vipBonus && vipBonus !== "Нет" && vipBonus.trim() !== "") {
+            bonusHTML += `<li><span class="list-icon"><i class="fas fa-star"></i></span><span><span class="highlight">VIP бонус:</span> ${vipBonus}</span></li>`;
+        } else {
+            // Если VIP активен, но у класса нет специфического бонуса, показываем общий бонус
+            bonusHTML += `<li><span class="list-icon"><i class="fas fa-star"></i></span><span><span class="highlight">VIP бонус:</span> Общий бонус VIP статуса активен</span></li>`;
         }
-
+    }
+    
+    if (isReborn) {
+        const rebornBonus = classData.reborn_bonus;
+        if (rebornBonus && rebornBonus !== "Нет" && rebornBonus.trim() !== "") {
+            bonusHTML += `<li><span class="list-icon"><i class="fas fa-bolt"></i></span><span><span class="highlight">Перерожденный бонус:</span> ${rebornBonus}</span></li>`;
+        } else {
+            // Если Перерожденный активен, но у класса нет специфического бонуса
+            bonusHTML += `<li><span class="list-icon"><i class="fas fa-bolt"></i></span><span><span class="highlight">Перерожденный бонус:</span> Общий бонус перерождения активен</span></li>`;
+        }
+    }
+    
+    // Специальные примечания
+    let specialHTML = '';
+    if (classData.special) {
+        specialHTML += `<div class="special-note"><i class="fas fa-exclamation-circle"></i> ${classData.special}</div>`;
+    }
+    
+    // Формируем HTML
+    classInfoDiv.innerHTML = `
+        <div class="class-header">
+            <div class="class-name">${classData.name}</div>
+            <div class="price-tag">${classData.price_ss} / ${classData.price_rub}</div>
+        </div>
+        
+        ${badgesHTML ? `<div class="bonus-badges">${badgesHTML}</div>` : ''}
+        
+        <div class="class-description">${classData.description}</div>
+        
+        <div class="section-title"><i class="fas fa-plus-circle"></i> Преимущества</div>
+        <ul class="pros-list">
+            ${classData.pros.map(pro => pro && pro.trim() !== "" ? `<li><span class="list-icon"><i class="fas fa-check"></i></span><span>${pro}</span></li>` : '').join('')}
+        </ul>
+        
+        <div class="section-title"><i class="fas fa-minus-circle"></i> Недостатки</div>
+        <ul class="cons-list">
+            ${classData.cons.map(con => con && con.trim() !== "" ? `<li><span class="list-icon"><i class="fas fa-times"></i></span><span>${con}</span></li>` : '').join('')}
+        </ul>
+        
+        ${bonusHTML ? `
+        <div class="section-title"><i class="fas fa-gift"></i> Активные бонусы</div>
+        <ul class="bonus-list">
+            ${bonusHTML}
+        </ul>
+        ` : ''}
+        
+        ${specialHTML}
+    `;
+}
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
             showPage('home');
