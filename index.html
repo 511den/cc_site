@@ -1382,53 +1382,94 @@
         }
 
         // Функции для калькулятора классов
-        function initCalculator() {
-            try {
-                // Заполняем выпадающий список
-                const classSelect = document.getElementById('classSelect');
-                if (!classSelect) return;
-                
-                classSelect.innerHTML = '<option value="">-- Выберите класс --</option>';
-                
-                // Добавляем все классы в выпадающий список
-                Object.values(classesData).forEach(cls => {
-                    const option = document.createElement('option');
-                    option.value = cls.id;
-                    option.textContent = cls.name;
-                    classSelect.appendChild(option);
-                });
-                
-                // Назначаем обработчики событий
-                setupCalculatorEvents();
-                
-                // Показываем первый класс по умолчанию
-                if (selectedClass) {
-                    classSelect.value = selectedClass;
-                } else {
-                    selectedClass = 'commander';
-                    classSelect.value = 'commander';
-                }
-                updateClassInfo();
-                
-            } catch (error) {
-                console.error('Ошибка загрузки данных классов:', error);
-                const classInfoDiv = document.getElementById('classInfo');
-                if (classInfoDiv) {
-                    classInfoDiv.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-icon">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </div>
-                            <div class="empty-text">
-                                <h3>Ошибка загрузки данных</h3>
-                                <p>${error.message}</p>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
+// Функции для калькулятора классов
+function initCalculator() {
+    try {
+        // Заполняем выпадающий список
+        const classSelect = document.getElementById('classSelect');
+        if (!classSelect) return;
+        
+        classSelect.innerHTML = '<option value="">-- Выберите класс --</option>';
+        
+        // Добавляем все классы в выпадающий список
+        Object.values(classesData).forEach(cls => {
+            const option = document.createElement('option');
+            option.value = cls.id;
+            option.textContent = cls.name;
+            classSelect.appendChild(option);
+        });
+        
+        // Показываем первый класс по умолчанию
+        if (selectedClass) {
+            classSelect.value = selectedClass;
+        } else {
+            selectedClass = 'commander';
+            classSelect.value = 'commander';
         }
+        
+        // Назначаем обработчики событий ПОСЛЕ добавления элементов в DOM
+        setTimeout(setupCalculatorEvents, 0);
+        updateClassInfo();
+        
+    } catch (error) {
+        console.error('Ошибка загрузки данных классов:', error);
+        const classInfoDiv = document.getElementById('classInfo');
+        if (classInfoDiv) {
+            classInfoDiv.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="empty-text">
+                        <h3>Ошибка загрузки данных</h3>
+                        <p>${error.message}</p>
+                    </div>
+                </div>
+            `;
+        }
+    }
+}
 
+function setupCalculatorEvents() {
+    // Настройка выбора класса
+    const classSelect = document.getElementById('classSelect');
+    if (classSelect) {
+        classSelect.addEventListener('change', function() {
+            selectedClass = this.value;
+            updateClassInfo();
+        });
+    }
+    
+    // Настройка переключателей VIP
+    const vipOptions = document.querySelectorAll('[data-option^="vip-"]');
+    console.log('Найдено VIP опций:', vipOptions.length); // Для отладки
+    
+    vipOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            console.log('VIP клик:', this.dataset.option); // Для отладки
+            vipOptions.forEach(opt => opt.classList.remove('active'));
+            this.classList.add('active');
+            hasVIP = this.dataset.option === 'vip-yes';
+            console.log('hasVIP установлено:', hasVIP); // Для отладки
+            updateClassInfo();
+        });
+    });
+    
+    // Настройка переключателей Перерожденный
+    const rebornOptions = document.querySelectorAll('[data-option^="reborn-"]');
+    console.log('Найдено Reborn опций:', rebornOptions.length); // Для отладки
+    
+    rebornOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            console.log('Reborn клик:', this.dataset.option); // Для отладки
+            rebornOptions.forEach(opt => opt.classList.remove('active'));
+            this.classList.add('active');
+            isReborn = this.dataset.option === 'reborn-yes';
+            console.log('isReborn установлено:', isReborn); // Для отладки
+            updateClassInfo();
+        });
+    });
+}
         function setupCalculatorEvents() {
             // Настройка выбора класса
             const classSelect = document.getElementById('classSelect');
